@@ -25,7 +25,7 @@ public class OrdersDAO extends DataAccessObject<Order> {
         super(connection);
     }
 
-
+    //Find Order Details by Order ID
     @Override
     public Order findById(long id) {
         Order order = new Order();
@@ -68,6 +68,16 @@ public class OrdersDAO extends DataAccessObject<Order> {
     }
 
     @Override
+    public List<Order> findAll() {
+        return null;
+    }
+
+    @Override
+    public List<Order> findAllPaged(int limit, int pageNumber) {
+        return null;
+    }
+
+    @Override
     public Order create(Order dto) {
         return null;
     }
@@ -82,6 +92,7 @@ public class OrdersDAO extends DataAccessObject<Order> {
 
     }
 
+    //Find Customer orders
     public List<Order> findByCustomerId(long id){
         List<Order> orders = new ArrayList<>();
         try(PreparedStatement statement = this.connection.prepareStatement(GET_BY_CUS);){

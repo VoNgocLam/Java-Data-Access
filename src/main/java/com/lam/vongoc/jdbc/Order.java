@@ -110,7 +110,7 @@ public class Order implements DataTransferObject {
     @Override
     public String toString() {
         return "Order{" +
-                "Order id=" + orderId +
+                "Id=" + orderId +
                 ", customerFirstName='" + customerFirstName + '\'' +
                 ", customerLastName='" + customerLastName + '\'' +
                 ", customerEmail='" + customerEmail + '\'' +

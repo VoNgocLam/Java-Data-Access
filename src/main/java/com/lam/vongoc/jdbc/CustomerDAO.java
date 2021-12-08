@@ -2,7 +2,6 @@ package com.lam.vongoc.jdbc;
 
 import com.lam.vongoc.jdbc.utils.DataAccessObject;
 
-import javax.naming.ldap.PagedResultsResponseControl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +16,9 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String GET_ONE = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
             "FROM customer WHERE customer_id = ?";
 
+    private static final String GET_ALL = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
+            "FROM customer";
+
     private static final String UPDATE = "UPDATE customer SET first_name = ?, last_name = ?, email = ?, phone = ?, address = ?," +
             "city = ?, state = ?, zipcode = ? WHERE customer_id = ?";
 
@@ -25,7 +27,7 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String GET_ALL_LMT = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
             "FROM customer ORDER BY first_name, last_name LIMIT ?";
 
-    private static final String GET_PAGED = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
+    private static final String GET_ALL_PAGED = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
             "FROM customer LIMIT ? OFFSET ?";
 
     public CustomerDAO(Connection connection) {
@@ -57,6 +59,32 @@ public class CustomerDAO extends DataAccessObject<Customer> {
         }
     }
 
+    @Override
+    public List<Customer> findAll() {
+        List<Customer> customers = new ArrayList<>();
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_ALL);)
+        {
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                Customer customer = new Customer();
+                customer.setId(rs.getLong(1));
+                customer.setFirstName(rs.getString(2));
+                customer.setLastName(rs.getString(3));
+                customer.setEmail(rs.getString(4));
+                customer.setPhone(rs.getString(5));
+                customer.setAddress(rs.getString(6));
+                customer.setCity(rs.getString(7));
+                customer.setState(rs.getString(8));
+                customer.setZipcode(rs.getString(9));
+                customers.add(customer);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customers;
+    }
+
     public List<Customer> findAllSorted(int limit){
         List<Customer> customers = new ArrayList<>();
         try(PreparedStatement statement = this.connection.prepareStatement(GET_ALL_LMT);){
@@ -86,7 +114,7 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     public List<Customer> findAllPaged(int limit, int pageNumber){
         List<Customer> customers = new ArrayList<>();
         int offset = (limit * (pageNumber - 1));
-        try(PreparedStatement statement = this.connection.prepareStatement(GET_PAGED);){
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_ALL_PAGED);){
             if (limit < 1){
                 limit = 10;
             }
@@ -125,7 +153,7 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             statement.setString(7, dto.getState());
             statement.setString(8, dto.getZipcode());
             statement.execute();
-            long key = this.getValue(CUSTOMER_SEQUENCE);
+            long key = this.getLastValue(CUSTOMER_SEQUENCE);
             return this.findById(key);
         } catch (SQLException e){
             e.printStackTrace();

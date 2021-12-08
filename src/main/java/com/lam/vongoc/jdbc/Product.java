@@ -2,14 +2,16 @@ package com.lam.vongoc.jdbc;
 
 import com.lam.vongoc.jdbc.utils.DataTransferObject;
 
+import java.math.BigDecimal;
+
 public class Product implements DataTransferObject{
 
-    private long id;
+    private long productId;
     private String code;
     private String name;
-    private String size;
+    private int size;
     private String variety;
-    private float price;
+    private BigDecimal price;
     private String status;
 
     public void setCode(String code) {
@@ -28,19 +30,19 @@ public class Product implements DataTransferObject{
         return name;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setSize(String size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
-    public String getSize() {
+    public int getSize() {
         return size;
     }
 
@@ -63,10 +65,23 @@ public class Product implements DataTransferObject{
 
     @Override
     public long getId() {
-        return 0;
+        return productId;
     }
 
     public void setID(long id){
-        this.id = id;
+        this.productId = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "Id=" + productId +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", size='" + size + '\'' +
+                ", variety='" + variety + '\'' +
+                ", price=" + price +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
