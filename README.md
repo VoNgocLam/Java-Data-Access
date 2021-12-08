@@ -1,4 +1,5 @@
 # Java-Data-Access
+* The project use Maven in order to set up environment, Docker actually run Postgres database and use DAO pattern with DTO when dealing with database.
 
 ## Prerequisites
 1. Docker is installed
