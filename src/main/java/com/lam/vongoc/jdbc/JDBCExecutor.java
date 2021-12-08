@@ -17,8 +17,7 @@ public class JDBCExecutor {
         try {
             Connection connection = dcm.getConnection();
             SalespersonDAO salespersonDAO = new SalespersonDAO(connection);
-            salespersonDAO.findAll().forEach(System.out::println);
-
+            System.out.println(salespersonDAO.findId("njohnson7@hplussport.com"));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

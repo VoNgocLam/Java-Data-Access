@@ -16,6 +16,8 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String GET_ONE = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
             "FROM customer WHERE customer_id = ?";
 
+    private static final String GET_ONE_ID = "SELECT customer_id FROM customer WHERE email = ?";
+
     private static final String GET_ALL = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, zipcode " +
             "FROM customer";
 
@@ -57,6 +59,21 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public long findId(String email){
+        long key = 0;
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_ONE_ID);){
+            statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                key = rs.getLong(1);
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return key;
     }
 
     @Override

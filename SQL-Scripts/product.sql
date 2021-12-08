@@ -2,7 +2,7 @@ CREATE SEQUENCE hp_product_seq start with 17;
 
 CREATE TABLE product (
   product_id bigint NOT NULL DEFAULT nextval('hp_product_seq'),
-  code varchar(50) DEFAULT NULL,
+  code varchar(50) DEFAULT NULL UNIQUE,
   name varchar(50) DEFAULT NULL,
   size int DEFAULT NULL,
   variety varchar(50) DEFAULT NULL,

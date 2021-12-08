@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Order implements DataTransferObject {
-    private long orderId;
+    private long id;
     private String customerFirstName;
     private String customerLastName;
     private String customerEmail;
@@ -20,11 +20,11 @@ public class Order implements DataTransferObject {
     private List<OrderLine> orderLine;
     @Override
     public long getId() {
-        return orderId;
+        return id;
     }
 
     public void setId(long id) {
-        this.orderId = id;
+        this.id = id;
     }
 
     public Date getCreationDate() {
@@ -110,7 +110,7 @@ public class Order implements DataTransferObject {
     @Override
     public String toString() {
         return "Order{" +
-                "Id=" + orderId +
+                "Id=" + id +
                 ", customerFirstName='" + customerFirstName + '\'' +
                 ", customerLastName='" + customerLastName + '\'' +
                 ", customerEmail='" + customerEmail + '\'' +

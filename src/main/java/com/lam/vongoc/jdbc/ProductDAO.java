@@ -11,6 +11,7 @@ public class ProductDAO extends DataAccessObject<Product> {
 
     private static final String INSERT = "INSERT INTO product(code, name, size, variety, price, status) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String GET_ONE = "SELECT product_id, code, name, size, variety, price, status FROM product WHERE product_id = ?";
+    private static final String GET_ONE_ID = "SELECT product_id FROM product WHERE code = ?";
     private static final String GET_ALL = "SELECT product_id, code, name, size, variety, price, status FROM product";
     private static final String GET_ALL_LMT = "SELECT product_id, code, name, size, variety, price, status FROM product LIMIT ?";
     private static final String GET_ALL_PAGED = "SELECT product_id, code, name, size, variety, price, status FROM product LIMIT ? OFFSET ?";
@@ -42,6 +43,21 @@ public class ProductDAO extends DataAccessObject<Product> {
             throw new RuntimeException(e);
         }
         return product;
+    }
+
+    public long findId(String code) {
+        long key = 0;
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_ONE_ID);){
+            statement.setString(1, code);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()){
+                key = rs.getLong(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return key;
     }
 
     @Override

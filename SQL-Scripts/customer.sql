@@ -4,7 +4,7 @@ CREATE TABLE customer (
   customer_id bigint NOT NULL DEFAULT nextval('hp_customer_seq'),
   first_name varchar(50) DEFAULT NULL,
   last_name varchar(50) DEFAULT NULL,
-  email varchar(50) DEFAULT NULL,
+  email varchar(50) DEFAULT NULL UNIQUE,
   phone varchar(50) DEFAULT NULL,
   address varchar(50) DEFAULT NULL,
   city varchar(50) DEFAULT NULL,

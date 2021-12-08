@@ -2,6 +2,7 @@ package com.lam.vongoc.jdbc;
 
 import com.lam.vongoc.jdbc.utils.DataAccessObject;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrdersDAO extends DataAccessObject<Order> {
+public class OrderDAO extends DataAccessObject<Order> {
+
+    private static final String INSERT_ORDER_LINE = "INSERT INTO order_item(order_id, product_id, quantity) VALUES (?, ?, ?)";
+
+    private static final String INSERT_ORDER = "INSERT INTO orders(creation_date, total_due, status, customer_id, salesperson_id) VALUES(?, ?, ?, ?, ?)";
+
+    private static final String UPDATE = "UPDATE orders SET status = ? WHERE order_id = ?";
+
     private static final String GET_BY_ID =
             "SELECT c.first_name, c.last_name, c.email, o.order_id, o.creation_date, o.total_due, o.status, " +
                     "s.first_name, s.last_name, s.email, oi.quantity, p.code, p.name, p.size, p.variety, p.price " +
@@ -21,7 +29,7 @@ public class OrdersDAO extends DataAccessObject<Order> {
 
     private static final String GET_BY_CUS = "SELECT * FROM get_orders_by_customer(?)";
 
-    public OrdersDAO(Connection connection) {
+    public OrderDAO(Connection connection) {
         super(connection);
     }
 
@@ -82,10 +90,21 @@ public class OrdersDAO extends DataAccessObject<Order> {
         return null;
     }
 
+//    public Order create(Order dto, List<OrderLine> dtol){
+//        long total_due = 0;
+//        for (OrderLine orderLine: dtol
+//             ) {
+//            total_due += orderLine.getProductPrice().longValue() * orderLine.getQuantity();
+//        }
+//
+//
+//    }
+//
     @Override
     public Order update(Order dto) {
         return null;
     }
+
 
     @Override
     public void delete(long id) {
