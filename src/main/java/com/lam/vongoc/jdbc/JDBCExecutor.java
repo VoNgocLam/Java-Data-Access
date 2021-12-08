@@ -16,8 +16,12 @@ public class JDBCExecutor {
 
         try {
             Connection connection = dcm.getConnection();
-            SalespersonDAO salespersonDAO = new SalespersonDAO(connection);
-            System.out.println(salespersonDAO.findId("njohnson7@hplussport.com"));
+            OrderDAO orderDAO = new OrderDAO(connection);
+            for(int i = 1; i < 21 ; i++){
+                System.out.println("Page Number " + i);
+                orderDAO.findAllPaged(10, i).forEach(System.out::println);
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
