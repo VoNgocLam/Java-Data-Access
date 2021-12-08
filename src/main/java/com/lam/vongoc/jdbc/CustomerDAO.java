@@ -143,6 +143,13 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     }
     @Override
     public Customer create(Customer dto) {
+        try{
+            this.connection.setAutoCommit(false);
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);){
             statement.setString(1, dto.getFirstName());
             statement.setString(2, dto.getLastName());
@@ -153,9 +160,16 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             statement.setString(7, dto.getState());
             statement.setString(8, dto.getZipcode());
             statement.execute();
+            this.connection.commit();
             long key = this.getLastValue(CUSTOMER_SEQUENCE);
             return this.findById(key);
         } catch (SQLException e){
+            try{
+                this.connection.rollback();
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new RuntimeException(sqle);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -163,7 +177,13 @@ public class CustomerDAO extends DataAccessObject<Customer> {
 
     @Override
     public Customer update(Customer dto) {
-        Customer customer = null;
+        try{
+            this.connection.setAutoCommit(false);
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
         try(PreparedStatement statement = this.connection.prepareStatement(UPDATE);){
             statement.setString(1,dto.getFirstName());
             statement.setString(2,dto.getLastName());
@@ -175,20 +195,40 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             statement.setString(8,dto.getZipcode());
             statement.setLong(9,dto.getId());
             statement.execute();
-            customer = this.findById(dto.getId());
+            this.connection.commit();
+            return this.findById(dto.getId());
         }catch (SQLException e){
+            try{
+                this.connection.rollback();
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new RuntimeException(sqle);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return customer;
     }
 
     @Override
     public void delete(long id) {
+        try{
+            this.connection.setAutoCommit(false);
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
         try(PreparedStatement statement = this.connection.prepareStatement(DELETE);){
             statement.setLong(1,id);
             statement.execute();
+            this.connection.commit();
         } catch (SQLException e){
+            try{
+                this.connection.rollback();
+            } catch (SQLException sqle){
+                sqle.printStackTrace();
+                throw new RuntimeException(sqle);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }

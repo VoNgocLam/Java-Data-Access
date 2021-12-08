@@ -2,7 +2,7 @@ package com.lam.vongoc.jdbc;
 
 import com.lam.vongoc.jdbc.utils.DataTransferObject;
 
-public class SalesPerson implements DataTransferObject {
+public class Salesperson implements DataTransferObject {
     private long id;
     private String firstName;
     private String lastName;
@@ -87,7 +87,7 @@ public class SalesPerson implements DataTransferObject {
 
     @Override
     public String toString() {
-        return "SalesPerson{" +
+        return "Salesperson{" +
                 "Id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

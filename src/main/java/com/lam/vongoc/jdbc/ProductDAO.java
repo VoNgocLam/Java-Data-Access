@@ -115,9 +115,9 @@ public class ProductDAO extends DataAccessObject<Product> {
             statement.setBigDecimal(5, dto.getPrice());
             statement.setString(6, dto.getStatus());
             statement.execute();
-            this.connection.commit();
 
             int key = this.getLastValue(PRODUCT_SEQUENCE);
+            this.connection.commit();
             return this.findById(key);
         } catch (SQLException e){
             try{
