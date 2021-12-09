@@ -46,23 +46,30 @@ BEGIN
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION get_customer_id(c_email varchar(50)) RETURNS bigint
+CREATE OR REPLACE FUNCTION get_customer_id(c_email varchar) RETURNS bigint
 AS $$
 BEGIN
     RETURN (SELECT c.customer_id FROM customer c WHERE c.email = c_email);
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION get_salesperson_id(s_email varchar(50)) RETURNS bigint
+CREATE OR REPLACE FUNCTION get_salesperson_id(s_email varchar) RETURNS bigint
 AS $$
 BEGIN
     RETURN (SELECT s.salesperson_id FROM salesperson s WHERE s.email = s_email);
 END;
 $$ LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION get_product_id(p_code varchar(50)) RETURNS bigint
+CREATE OR REPLACE FUNCTION get_product_id(p_code varchar) RETURNS bigint
 AS $$
 BEGIN
-    RETURN(SELECT p.product_id FROM product p WHERE p.code = p_code);
+    RETURN (SELECT p.product_id FROM product p WHERE p.code = p_code);
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION get_product_price(p_code varchar) RETURNS numeric
+AS $$
+BEGIN
+    RETURN (SELECT p.price FROM product p WHERE p.code = p_code);
 END;
 $$ LANGUAGE 'plpgsql';

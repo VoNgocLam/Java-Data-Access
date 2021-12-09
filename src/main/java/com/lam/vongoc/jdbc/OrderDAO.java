@@ -43,6 +43,8 @@ public class OrderDAO extends DataAccessObject<Order> {
 
     private static final String GET_PRODUCT_ID = "SELECT get_product_id(?)";
 
+    private static final String GET_PRODUCT_PRICE = "SELECT get_product_price(?)";
+
     private static final String GET_SALESPERSON_ID = "SELECT get_salesperson_id(?)";
 
     private static final String GET_BY_CUS = "SELECT * FROM get_orders_by_customer(?)";
@@ -161,14 +163,23 @@ public class OrderDAO extends DataAccessObject<Order> {
 
     @Override
     public Order create(Order dto) {
-        long total_due = 0;
+        double total_due = 0;
         long customerKey = 0;
         long salespersonKey = 0;
         long orderKey = 0;
         long productKey = 0;
         for (OrderLine orderline: dto.getOrderLine()
              ) {
-            total_due += orderline.getQuantity() * orderline.getProductPrice().longValue();
+            try(PreparedStatement statement = this.connection.prepareStatement(GET_PRODUCT_PRICE);){
+                statement.setString(1, orderline.getProductCode());
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()){
+                    total_due += orderline.getQuantity() * rs.getBigDecimal(1).doubleValue();
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
 
         dto.setTotalDue(BigDecimal.valueOf(total_due));
