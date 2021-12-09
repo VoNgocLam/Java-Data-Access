@@ -43,6 +43,26 @@ BEGIN
   JOIN product p on ol.product_id = p.product_id
   where c.customer_id = p_customer_id
   order by o.order_id, p.code;
-END; $$
+END;
+$$ LANGUAGE 'plpgsql';
 
-LANGUAGE 'plpgsql';
+CREATE OR REPLACE FUNCTION get_customer_id(c_email varchar(50)) RETURNS bigint
+AS $$
+BEGIN
+    RETURN (SELECT c.customer_id FROM customer c WHERE c.email = c_email);
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION get_salesperson_id(s_email varchar(50)) RETURNS bigint
+AS $$
+BEGIN
+    RETURN (SELECT s.salesperson_id FROM salesperson s WHERE s.email = s_email);
+END;
+$$ LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION get_product_id(p_code varchar(50)) RETURNS bigint
+AS $$
+BEGIN
+    RETURN(SELECT p.product_id FROM product p WHERE p.code = p_code);
+END;
+$$ LANGUAGE 'plpgsql';

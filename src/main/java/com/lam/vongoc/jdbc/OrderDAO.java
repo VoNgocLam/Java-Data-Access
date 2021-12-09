@@ -11,6 +11,11 @@ import java.util.List;
 
 public class OrderDAO extends DataAccessObject<Order> {
 
+    private static final String INSERT_ORDER = "INSERT INTO orders(creation_date, total_due, status, customer_id, salesperson_id)" +
+            "VALUES(?, ?, ?, ?, ?)";
+
+    private static final String INSERT_ORDER_LINE = "INSERT INTO order_item(order_id, product_id, quantity) " +
+            "VALUES(?, ?, ?)";
     private static final String UPDATE = "UPDATE orders SET status = ? WHERE order_id = ?";
 
     private static final String GET_BY_ID =
@@ -33,6 +38,12 @@ public class OrderDAO extends DataAccessObject<Order> {
 
     private static final String GET_ALL_PAGED =
             "SELECT order_id FROM orders LIMIT ? OFFSET ?";
+
+    private static final String GET_CUS_ID = "SELECT get_customer_id(?)";
+
+    private static final String GET_PRODUCT_ID = "SELECT get_product_id(?)";
+
+    private static final String GET_SALESPERSON_ID = "SELECT get_salesperson_id(?)";
 
     private static final String GET_BY_CUS = "SELECT * FROM get_orders_by_customer(?)";
 
@@ -150,8 +161,81 @@ public class OrderDAO extends DataAccessObject<Order> {
 
     @Override
     public Order create(Order dto) {
-        return null;
+        long total_due = 0;
+        long customerKey = 0;
+        long salespersonKey = 0;
+        long orderKey = 0;
+        long productKey = 0;
+        for (OrderLine orderline: dto.getOrderLine()
+             ) {
+            total_due += orderline.getQuantity() * orderline.getProductPrice().longValue();
+        }
+
+        dto.setTotalDue(BigDecimal.valueOf(total_due));
+
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_CUS_ID);){
+            statement.setString(1, dto.getCustomerEmail());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                customerKey = rs.getLong(1);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_SALESPERSON_ID);){
+            statement.setString(1, dto.getSalespersonEmail());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()){
+                salespersonKey = rs.getLong(1);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        try(PreparedStatement statement = this.connection.prepareStatement(INSERT_ORDER);){
+            statement.setDate(1, Date.valueOf(LocalDate.now()));
+            statement.setBigDecimal(2, dto.getTotalDue());
+            statement.setString(3, dto.getStatus());
+            statement.setLong(4, customerKey);
+            statement.setLong(5, salespersonKey);
+            statement.execute();
+
+            orderKey = this.getLastValue(ORDER_SEQUENCE);
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        for (OrderLine line: dto.getOrderLine()
+             ) {
+            try(PreparedStatement statement = this.connection.prepareStatement(GET_PRODUCT_ID);){
+                statement.setString(1, line.getProductCode());
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()){
+                    productKey = rs.getLong(1);
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+
+            try(PreparedStatement statement = this.connection.prepareStatement(INSERT_ORDER_LINE);){
+                statement.setLong(1, orderKey);
+                statement.setLong(2, productKey);
+                statement.setInt(3, line.getQuantity());
+                statement.execute();
+            } catch (SQLException e){
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+
+        return this.findById(orderKey);
     }
+
 
     @Override
     public Order update(Order dto) {
