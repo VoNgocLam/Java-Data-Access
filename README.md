@@ -32,4 +32,4 @@
 
 
 ### Creating stored procedure
-1. `psql -h localhost -U postgres -f stored_proc.sql`
+1. `psql -h localhost -U postgres -d hplussport -f stored_proc.sql`
