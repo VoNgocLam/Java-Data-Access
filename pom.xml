@@ -21,7 +21,7 @@
 <!--            <artifactId>postgresql</artifactId>-->
 <!--            <version>9.1-901-1.jdbc4</version>-->
                  
-<!--            42.2.24 is the latest PostgreSQL JDBC driver version that support scram-sha-256 authentication-->
+<!--            42.2.24 is the latest PostgreSQL JDBC driver version that also support scram-sha-256 authentication-->
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.24</version>
