@@ -9,7 +9,7 @@
 
 ### Running PostgreSQL
 1. Pull Docker Image
-`docker pull postgres:9`
+`docker pull postgres`
 
 2. Build data directory
 `mkdir -p ~/srv/postgres`
